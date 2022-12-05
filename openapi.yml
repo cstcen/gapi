@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: XK5 API Gateway
+  version: 1.0.0
+  description: API Gateway
+servers:
+  - url: https://gw-{env}.xk5.com
+    variables:
+      env:
+        enum:
+          - sdev0
+          - sdev
+          - dev
+          - dev2
+          - dev3a
+          - mod
+          - stg
+        default: sdev0
+  - url: http://localhost:8000
+components:
+  securitySchemes:
+    AuthKey:
+      type: apiKey
+      name: Authorization
+      in: header
+paths:
+  /v1.0/ugc/{ugcId}/meta:
+    get:
+      summary: Get UGC meta info
+      tags:
+        - UGC
+      security:
+        - AuthKey: []
+      parameters:
+        - name: ugcId
+          schema:
+            type: string
+          in: path
+          required: true
+          description: ID of UGC
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      sign:
+                        type: string
+                      token:
+                        type: string
+                      url:
+                        type: string
+                      fileId:
+                        type: string
+  /v1.0/ugc/{ugcId}/notify/{type}:
+    put:
+      summary: Notify UGC that the upload or download was successful
+      tags:
+        - UGC
+      security:
+        - AuthKey: []
+      parameters:
+        - name: ugcId
+          schema:
+            type: string
+          in: path
+          required: true
+          description: ID of UGC
+        - name: type
+          schema:
+            type: string
+            enum:
+              - upload
+              - download
+          in: path
+          required: true
+          description: Type of increase
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
